@@ -1,0 +1,2 @@
+npm install @fal-ai/client dotenv
+npm install --save-dev @rolldown/binding-darwin-arm64
