@@ -23,7 +23,7 @@ Step 3 sends the sketch to the Vite development server, which calls `fal-ai/flux
 
 The Meshy Text to 3D option sends its renderer prompt to `meshy/v7.1/text-to-3d` through fal using `FLUX_API_KEY`, then provides the resulting textured GLB model for download.
 
-Tripo has two options: `Tripo via fal` uses `FLUX_API_KEY`, while `Tripo direct API` uploads the sketch to Tripo and uses `TRIPO_API_KEY` (or the existing `TRIP0_API_KEY` spelling) from `.env`.
+Tripo uses `FLUX_API_KEY` through fal. Hunyuan 3D Pro is also available through fal and uses the same key.
 
 ## What is not built
 

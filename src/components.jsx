@@ -114,7 +114,7 @@ export function RenderStep({ domain, design, result, rendering, progress, error,
       <div className="render-right">
         <div className="label">Rendered version</div>
         <p className="hint">
-          {result ? `Made with ${renderer.name}.` : rendering ? renderer.id === 'meshy-text' ? 'Meshy is creating your 3D model…' : renderer.id === 'tripo-direct-api' ? `Tripo is creating your 3D model… ${progress}%` : renderer.id === 'tripo-api' ? 'Tripo via fal is creating your 3D model…' : 'FLUX is turning your sketch into a rendered product image…' : 'Render the sketch with the selected model.'}
+          {result ? `Made with ${renderer.name}.` : rendering ? renderer.id === 'meshy-text' ? 'Meshy is creating your 3D model…' : renderer.id === 'hunyuan3d' ? 'Hunyuan is creating your 3D model…' : renderer.id === 'tripo-api' ? 'Tripo via fal is creating your 3D model…' : 'FLUX is turning your sketch into a rendered product image…' : 'Render the sketch with the selected model.'}
         </p>
         <figure className="result" ref={frame}>
           {result && result.kind === 'image'

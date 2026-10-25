@@ -30,11 +30,11 @@ export const renderers = [
     buildPrompt: () => 'No text prompt. Send the sketch image. If the result ignores the colors, render the sketch to a photo first (FLUX Kontext), then send that photo.',
   },
   {
-    id: 'tripo-direct-api',
-    name: 'Tripo direct API (v3.1 image to 3D)',
-    sends: 'the sketch image directly to Tripo',
+    id: 'hunyuan3d',
+    name: 'Hunyuan 3D Pro (v3.1 image to 3D)',
+    sends: 'the sketch image to Hunyuan through fal',
     output: '3D model',
-    buildPrompt: () => 'No text prompt. Send the sketch image to the Tripo API.',
+    buildPrompt: () => 'No text prompt. Send the sketch image to Hunyuan 3D Pro.',
   },
   {
     id: 'trellis',

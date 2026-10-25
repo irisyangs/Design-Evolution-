@@ -28,45 +28,8 @@ async function connectFalRenderer({ domain, design, prompt, rendererId }) {
     url: data.url,
     kind: data.kind,
     previewUrl: data.previewUrl,
-    filename: data.filename || `${domain.id}-${rendererId === 'meshy-text' ? 'meshy-model.glb' : rendererId === 'trellis' ? 'trellis-model.glb' : rendererId === 'tripo-api' ? 'tripo-model.glb' : 'flux-render.png'}`,
+    filename: data.filename || `${domain.id}-${rendererId === 'meshy-text' ? 'meshy-model.glb' : rendererId === 'trellis' ? 'trellis-model.glb' : rendererId === 'tripo-api' ? 'tripo-model.glb' : rendererId === 'hunyuan3d' ? 'hunyuan-model.glb' : 'flux-render.png'}`,
   };
-}
-
-async function connectDirectTripo({ domain, design, onProgress }) {
-  const canvas = document.createElement('canvas');
-  canvas.width = 1040;
-  canvas.height = 1040;
-  domain.draw(canvas, design, { labels: false });
-  const createResponse = await fetch('/api/tripo-direct-render', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ image: canvas.toDataURL('image/png') }),
-  });
-  const created = await createResponse.json();
-  if (!createResponse.ok) throw new Error(created.error || 'Could not start direct Tripo task.');
-  if (!created.task_id) throw new Error('Tripo did not return a task ID.');
-
-  const deadline = Date.now() + 10 * 60 * 1000;
-  while (Date.now() < deadline) {
-    await new Promise((resolve) => setTimeout(resolve, 2500));
-    const response = await fetch(`/api/tripo-direct-render/${encodeURIComponent(created.task_id)}`);
-    const task = await response.json();
-    if (!response.ok) throw new Error(task.error || 'Could not check direct Tripo task status.');
-    onProgress(task.progress || 0);
-    if (task.status === 'success') {
-      if (!task.output?.model_url) throw new Error('Tripo finished without a downloadable model.');
-      return {
-        kind: 'model',
-        url: task.output.model_url,
-        previewUrl: task.output.rendered_image_url,
-        filename: `${domain.id}-tripo-direct-model.glb`,
-      };
-    }
-    if (task.status === 'failed' || task.status === 'cancelled') {
-      throw new Error(task.error_message || `Tripo task ${task.status}.`);
-    }
-  }
-  throw new Error('Tripo is still processing. Try rendering again in a moment.');
 }
 
 export default function App() {
@@ -120,7 +83,7 @@ export default function App() {
   }
   async function runRender(rendererId, prompt) {
     if (!render) return;
-    if (rendererId !== 'flux-kontext' && rendererId !== 'meshy-text' && rendererId !== 'tripo-api' && rendererId !== 'tripo-direct-api' && rendererId !== 'trellis') {
+    if (rendererId !== 'flux-kontext' && rendererId !== 'meshy-text' && rendererId !== 'tripo-api' && rendererId !== 'hunyuan3d' && rendererId !== 'trellis') {
       const selected = renderers.find((renderer) => renderer.id === rendererId);
       setRenderError(`${selected?.name || 'This renderer'} is not connected yet. You can copy its prompt to use it separately.`);
       return;
@@ -128,9 +91,7 @@ export default function App() {
     setRendering(true); setRenderError(''); setRenderProgress(0);
     try {
       const { design } = render;
-      const result = rendererId === 'tripo-direct-api'
-        ? await connectDirectTripo({ domain, design, onProgress: setRenderProgress })
-        : await connectFalRenderer({ domain, design, prompt, rendererId });
+      const result = await connectFalRenderer({ domain, design, prompt, rendererId });
       setRender((r) => (r && r.design === design ? { ...r, result } : r));
     } catch (error) {
       setRenderError(error.message || 'FLUX rendering failed.');
