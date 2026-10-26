@@ -37,7 +37,12 @@ jobs:
         run: npm ci
 
       - name: Build site
-        run: npm run build
+        run: |
+          if [ -z "$VITE_RENDER_API_BASE_URL" ]; then
+            echo "::error::Set VITE_RENDER_API_BASE_URL under Settings → Secrets and variables → Actions → Variables, then rerun this workflow."
+            exit 1
+          fi
+          npm run build
         env:
           VITE_RENDER_API_BASE_URL: ${{ vars.VITE_RENDER_API_BASE_URL }}
 
