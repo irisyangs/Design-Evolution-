@@ -6,6 +6,15 @@ import { renderers } from './renderers.js';
 
 const COUNT = 36;
 
+function renderApiUrl() {
+  const configuredApiBase = import.meta.env.VITE_RENDER_API_BASE_URL?.trim();
+  if (import.meta.env.PROD && !configuredApiBase) {
+    throw new Error('AI rendering on GitHub Pages needs a separately hosted API. Configure the VITE_RENDER_API_BASE_URL GitHub Actions variable; keep FLUX_API_KEY on that server.');
+  }
+  const base = configuredApiBase || import.meta.env.BASE_URL;
+  return `${base.replace(/\/+$/, '')}/api/flux-render`;
+}
+
 // The one place a renderer plugs in. Given a design and its text prompt, return one result:
 //   { url, kind: 'image' | 'model', filename }   (filename is what the Download button saves it as)
 async function connectFalRenderer({ domain, design, prompt, rendererId }) {
@@ -17,7 +26,7 @@ async function connectFalRenderer({ domain, design, prompt, rendererId }) {
     domain.draw(canvas, design, { labels: false });
     image = canvas.toDataURL('image/png');
   }
-  const response = await fetch('/api/flux-render', {
+  const response = await fetch(renderApiUrl(), {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ image, prompt, rendererId }),

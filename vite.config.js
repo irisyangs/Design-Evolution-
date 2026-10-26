@@ -3,7 +3,8 @@ import react from '@vitejs/plugin-react';
 import { fal } from '@fal-ai/client';
 import { loadEnv } from 'vite';
 
-const fluxEndpoint = '/api/flux-render';
+const appBase = '/Design-Evolution-/';
+const fluxEndpoint = `${appBase}api/flux-render`;
 
 function fluxRenderApi() {
   return {
@@ -107,4 +108,7 @@ function fluxRenderApi() {
   };
 }
 
-export default defineConfig({ plugins: [react(), fluxRenderApi()] });
+export default defineConfig({
+  plugins: [react(), fluxRenderApi()],
+  base: appBase,
+});

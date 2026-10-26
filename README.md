@@ -9,6 +9,12 @@ A seed for the Design Evolution team. Pick a category, evolve a design by clicki
 
 Then open the address Vite prints (usually http://localhost:5173).
 
+## Deploy to GitHub Pages
+
+The repository includes a GitHub Actions workflow that builds and deploys the static site when changes are pushed to `main`. In the repository settings, set **Pages → Build and deployment → Source** to **GitHub Actions**. The Vite base path is set to `/Design-Evolution-/`, matching this repository name.
+
+GitHub Pages only hosts the static frontend; it does not run the fal API middleware in `vite.config.js`. The site will load without a backend, but renderer buttons need a separately hosted API service. Set the repository Actions variable `VITE_RENDER_API_BASE_URL` to that service's base URL (for example, `https://api.example.com`). The service must implement `POST /api/flux-render` and allow browser CORS requests from `https://irisyangs.github.io`. Keep `FLUX_API_KEY` as a secret on that API server; never put it in a `VITE_` variable.
+
 ## How it is laid out
 
 - `src/engine.js`: the evolution engine. It knows nothing about mugs or shirts. A design is an object of numbers between 0 and 1.
