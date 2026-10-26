@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: design-evolution-render-api
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm run start:api
+    healthCheckPath: /
+    envVars:
+      - key: FLUX_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGIN
+        value: https://irisyangs.github.io
