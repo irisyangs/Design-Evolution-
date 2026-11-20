@@ -71,6 +71,45 @@ export function Trail({ domain, trail, onBack }) {
   );
 }
 
+export function ResearchRatings({ generationIndex, selectedGenerationIndex, onSave }) {
+  const [similarity, setSimilarity] = useState('');
+  const [control, setControl] = useState('');
+  const [dismissed, setDismissed] = useState(false);
+
+  if (dismissed) return null;
+
+  return (
+    <section className="research-ratings" aria-labelledby="research-ratings-title">
+      <div className="label" id="research-ratings-title">Study ratings</div>
+      <label htmlFor="similarity-rating">Similarity of the selected design to your original concept (1–10)</label>
+      <select id="similarity-rating" value={similarity} onChange={(event) => setSimilarity(event.target.value)}>
+        <option value="">Choose a rating</option>
+        {Array.from({ length: 10 }, (_, i) => i + 1).map((rating) => (
+          <option key={rating} value={rating}>{rating}</option>
+        ))}
+      </select>
+      <label htmlFor="control-rating">How predictable and controllable did this generation feel? (1–10)</label>
+      <select id="control-rating" value={control} onChange={(event) => setControl(event.target.value)}>
+        <option value="">Choose a rating</option>
+        {Array.from({ length: 10 }, (_, i) => i + 1).map((rating) => (
+          <option key={rating} value={rating}>{rating}</option>
+        ))}
+      </select>
+      <p className="hint">
+        Similarity refers to the selected design from generation {selectedGenerationIndex};
+        control refers to the options shown in generation {generationIndex}.
+      </p>
+      <div className="row research-rating-actions">
+        <button type="button" className="primary" disabled={!similarity || !control}
+          onClick={() => { onSave(Number(similarity), Number(control)); setDismissed(true); }}>
+          Save ratings
+        </button>
+        <button type="button" onClick={() => setDismissed(true)}>Skip ratings</button>
+      </div>
+    </section>
+  );
+}
+
 // The render step. One big frame for the rendered design, with a Download button under it.
 // No generator is connected yet: connectRenderer() in App.jsx is the one place to add it.
 // Until it returns a result, the frame shows the sketch and Download saves the sketch as a PNG.
